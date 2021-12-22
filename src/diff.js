@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs';
 import _ from 'lodash';
 import path from 'path';
+import parseData from './parsers.js';
 
 const getDiffFiles = (file1, file2, sign = ' ', number = 4) => {
   const dataKeys = _.sortBy(Object.keys({ ...file1, ...file2 }));
@@ -27,10 +28,9 @@ const getDiffFiles = (file1, file2, sign = ' ', number = 4) => {
 };
 
 export default (path1, path2) => {
-  if (path1.slice(-5) === '.json' && path2.slice(-5) === '.json') {
-    const file1 = JSON.parse(readFileSync(path.resolve(process.cwd(), path1), 'utf-8'));
-    const file2 = JSON.parse(readFileSync(path.resolve(process.cwd(), path2), 'utf-8'));
-    return getDiffFiles(file1, file2);
-  }
-  return 'ошибка';
+  const extPath1 = path.parse(path1).ext;
+  const extPath2 = path.parse(path2).ext;
+  const file1 = parseData((readFileSync(path.resolve(process.cwd(), path1), 'utf-8')), extPath1);
+  const file2 = parseData((readFileSync(path.resolve(process.cwd(), path2), 'utf-8')), extPath2);
+  return getDiffFiles(file1, file2);
 };
