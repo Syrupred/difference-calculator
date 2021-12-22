@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import _ from 'lodash';
 import path from 'path';
 
-const getDiffFiles = (file1, file2, sign = ' ', number = 2) => {
+const getDiffFiles = (file1, file2, sign = ' ', number = 4) => {
   const dataKeys = _.sortBy(Object.keys({ ...file1, ...file2 }));
   const indent = sign.repeat(number);
   const iter = (data1, data2) => {
@@ -23,7 +23,7 @@ const getDiffFiles = (file1, file2, sign = ' ', number = 2) => {
     }, '');
     return comparison;
   };
-  return `{\n${iter(file1, file2)}}`;
+  return `{\n${iter(file1, file2)}  }`;
 };
 
 export default (path1, path2) => {
