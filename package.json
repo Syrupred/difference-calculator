@@ -5,10 +5,14 @@
   "description": "project2_CLI",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx jest"
   },
   "bin": {
     "gendiff": "bin/gendiff.js"
+  },
+  "jest": {
+    "verbose": true,
+    "transform": {}
   },
   "repository": {
     "type": "git",
@@ -24,11 +28,16 @@
     "commander": "^8.3.0",
     "fs": "^0.0.1-security",
     "lodash": "^4.17.21",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "url": "^0.11.0"
   },
   "devDependencies": {
+    "@jest/globals": "^27.4.4",
     "eslint": "^8.5.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.25.3"
+    "eslint-plugin-import": "^2.25.3",
+    "jest": "^27.4.5",
+    "jest-circus": "^27.4.5",
+    "jest-cli": "^27.4.5"
   }
 }
