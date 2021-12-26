@@ -8,3 +8,5 @@
 [![asciicast](https://asciinema.org/a/fBz78xzmYMQXbASq3WpIHK3I0.svg)](https://asciinema.org/a/fBz78xzmYMQXbASq3WpIHK3I0)
 ### Diff YAML files
 [![asciicast](https://asciinema.org/a/iKyTPQ7vTX6JW6yDnoSIgaxnK.svg)](https://asciinema.org/a/iKyTPQ7vTX6JW6yDnoSIgaxnK)
+### Diff JSON files - Stylish format
+[![asciicast](https://asciinema.org/a/vOjamcTvvjXjWVMf3mETOwYWY.svg)](https://asciinema.org/a/vOjamcTvvjXjWVMf3mETOwYWY)
