@@ -12,3 +12,5 @@
 [![asciicast](https://asciinema.org/a/vOjamcTvvjXjWVMf3mETOwYWY.svg)](https://asciinema.org/a/vOjamcTvvjXjWVMf3mETOwYWY)
 ### Diff JSON files - Plain format
 [![asciicast](https://asciinema.org/a/lIW2ntRkFAnHUivUZ7EZs8KjW.svg)](https://asciinema.org/a/lIW2ntRkFAnHUivUZ7EZs8KjW)
+### Diff JSON files - JSON format
+[![asciicast](https://asciinema.org/a/ybG0mXYfbKNnYDUQjT4415jdW.svg)](https://asciinema.org/a/ybG0mXYfbKNnYDUQjT4415jdW)

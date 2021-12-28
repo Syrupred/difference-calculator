@@ -40,3 +40,19 @@ test('diff YAML files - Plain format', () => {
 
   expect(diff(file1, file2, 'plain')).toEqual(expected);
 });
+
+test('diff JSON files - JSON format', () => {
+  const file1 = getFixturePath('file1.json');
+  const file2 = getFixturePath('file2.json');
+  const expected = readFile('expectedJSON.json');
+
+  expect(diff(file1, file2, 'json')).toEqual(expected);
+});
+
+test('diff YAML files - JSON format', () => {
+  const file1 = getFixturePath('file1.yml');
+  const file2 = getFixturePath('file2.yaml');
+  const expected = readFile('expectedJSON.json');
+
+  expect(diff(file1, file2, 'json')).toEqual(expected);
+});

@@ -5,5 +5,8 @@ export default (data, format) => {
   if (format === 'stylish') {
     return makeStylishFormat(data);
   }
+  if (format === 'json') {
+    return JSON.stringify(data);
+  }
   return makePlainFormat(data);
 };
