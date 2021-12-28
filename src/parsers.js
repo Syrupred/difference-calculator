@@ -1,11 +1,14 @@
 import yaml from 'js-yaml';
 
 export default (data, ext) => {
-  let parse;
-  if (ext === '.json' || ext === '') {
-    parse = JSON.parse;
-  } else if (ext === '.yml' || ext === '.yaml') {
-    parse = yaml.load;
+  switch (ext) {
+    case '.json':
+    case '':
+      return JSON.parse(data);
+    case '.yml':
+    case '.yaml':
+      return yaml.load(data);
+    default:
+      throw new Error(`Unknown extension: '${ext}'!`);
   }
-  return parse(data);
 };
