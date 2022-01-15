@@ -13,7 +13,7 @@ const makeValue = (data) => {
 const makePlainFormat = (node) => {
   const iter = (data, path) => {
     const lines = data.map((obj) => {
-      const newPath = [path, obj.name].flat();
+      const newPath = [...path, obj.name];
       const connectedNewPath = newPath.join('.');
       switch (obj.status) {
         case 'added':
@@ -23,7 +23,7 @@ const makePlainFormat = (node) => {
         case 'changed':
           return `Property '${connectedNewPath}' was updated. From ${makeValue(obj.oldValue)} to ${makeValue(obj.newValue)}`;
         case 'hasChildren':
-          return iter(obj.children, connectedNewPath);
+          return iter(obj.children, newPath);
         default:
           return undefined;
       }
