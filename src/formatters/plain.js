@@ -15,7 +15,6 @@ const makePlainFormat = (node) => {
     const lines = data.map((obj) => {
       const newPath = [path, obj.name].flat();
       const connectedNewPath = newPath.join('.');
-      console.log(newPath);
       switch (obj.status) {
         case 'added':
           return `Property '${connectedNewPath}' was added with value: ${makeValue(obj.value)}`;
