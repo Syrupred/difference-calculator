@@ -1,6 +1,7 @@
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import { test, expect } from '@jest/globals';
 import diff from '../src/diff.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -9,50 +10,59 @@ const __dirname = dirname(__filename);
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 
-test('diff JSON files - Stylish format', () => {
-  const file1 = getFixturePath('file1.json');
-  const file2 = getFixturePath('file2.json');
-  const expected = readFile('stylish.txt');
+const cases = [{
+  firstFile: 'file1.json',
+  secondFile: 'file2.yaml',
+  resultFile: 'stylish.txt',
+  format: 'JSON',
+  style: 'stylish',
+},
+{
+  firstFile: 'file1.yml',
+  secondFile: 'file2.yaml',
+  resultFile: 'stylish.txt',
+  format: 'YAML',
+  style: 'stylish',
+},
+{
+  firstFile: 'file1.json',
+  secondFile: 'file2.json',
+  resultFile: 'plain.txt',
+  format: 'JSON',
+  style: 'plain',
+},
+{
+  firstFile: 'file1.yml',
+  secondFile: 'file2.yaml',
+  resultFile: 'plain.txt',
+  format: 'YAML',
+  style: 'plain',
+},
+{
+  firstFile: 'file1.json',
+  secondFile: 'file2.json',
+  resultFile: 'expectedJSON.json',
+  format: 'JSON',
+  style: 'json',
+},
+{
+  firstFile: 'file1.yml',
+  secondFile: 'file2.yaml',
+  resultFile: 'expectedJSON.json',
+  format: 'YAML',
+  style: 'json',
+},
+];
 
-  expect(diff(file1, file2)).toEqual(expected);
-});
+test.each(cases)(
+  'diff $format files - $style format',
+  ({
+    firstFile, secondFile, resultFile, style,
+  }) => {
+    const file1 = getFixturePath(firstFile);
+    const file2 = getFixturePath(secondFile);
+    const expected = readFile(resultFile);
 
-test('diff YAML files - Stylish format', () => {
-  const file1 = getFixturePath('file1.yml');
-  const file2 = getFixturePath('file2.yaml');
-  const expected = readFile('stylish.txt');
-
-  expect(diff(file1, file2)).toEqual(expected);
-});
-
-test('diff JSON files - Plain format', () => {
-  const file1 = getFixturePath('file1.json');
-  const file2 = getFixturePath('file2.json');
-  const expected = readFile('plain.txt');
-
-  expect(diff(file1, file2, 'plain')).toEqual(expected);
-});
-
-test('diff YAML files - Plain format', () => {
-  const file1 = getFixturePath('file1.yml');
-  const file2 = getFixturePath('file2.yaml');
-  const expected = readFile('plain.txt');
-
-  expect(diff(file1, file2, 'plain')).toEqual(expected);
-});
-
-test('diff JSON files - JSON format', () => {
-  const file1 = getFixturePath('file1.json');
-  const file2 = getFixturePath('file2.json');
-  const expected = readFile('expectedJSON.json');
-
-  expect(diff(file1, file2, 'json')).toEqual(expected);
-});
-
-test('diff YAML files - JSON format', () => {
-  const file1 = getFixturePath('file1.yml');
-  const file2 = getFixturePath('file2.yaml');
-  const expected = readFile('expectedJSON.json');
-
-  expect(diff(file1, file2, 'json')).toEqual(expected);
-});
+    expect(diff(file1, file2, style)).toEqual(expected);
+  },
+);

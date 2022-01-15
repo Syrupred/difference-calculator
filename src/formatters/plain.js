@@ -1,32 +1,33 @@
 import _ from 'lodash';
 
 const makeValue = (data) => {
-  if (!_.isObject(data)) {
-    if (_.isString(data)) {
-      return `'${data}'`;
-    }
-    return data;
+  if (_.isObject(data)) {
+    return '[complex value]';
   }
-  return '[complex value]';
+  if (_.isString(data)) {
+    return `'${data}'`;
+  }
+  return data;
 };
 
 const makePlainFormat = (node) => {
   const iter = (data, path) => {
     const lines = data.map((obj) => {
       const newPath = [path, obj.name].flat();
-      if (obj.status === 'added') {
-        return `Property '${newPath.join('.')}' was added with value: ${makeValue(obj.value)}`;
+      const connectedNewPath = newPath.join('.');
+      console.log(newPath);
+      switch (obj.status) {
+        case 'added':
+          return `Property '${connectedNewPath}' was added with value: ${makeValue(obj.value)}`;
+        case 'deleted':
+          return `Property '${connectedNewPath}' was removed`;
+        case 'changed':
+          return `Property '${connectedNewPath}' was updated. From ${makeValue(obj.oldValue)} to ${makeValue(obj.newValue)}`;
+        case 'hasChildren':
+          return iter(obj.children, connectedNewPath);
+        default:
+          return undefined;
       }
-      if (obj.status === 'deleted') {
-        return `Property '${newPath.join('.')}' was removed`;
-      }
-      if (obj.status === 'changed') {
-        return `Property '${newPath.join('.')}' was updated. From ${makeValue(obj.oldValue)} to ${makeValue(obj.newValue)}`;
-      }
-      if (obj.status === 'hasChildren') {
-        return iter(obj.children, newPath.join('.'));
-      }
-      return undefined;
     });
     return lines.filter((str) => str !== undefined).join('\n');
   };
