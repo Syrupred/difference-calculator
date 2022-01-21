@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const buildTree = (data1, data2) => {
+const buildChildrenRoot = (data1, data2) => {
   const dataKeys = _.sortBy(Object.keys({ ...data1, ...data2 }));
   return dataKeys.map((key) => {
     const valueData1 = data1[key];
@@ -14,7 +14,7 @@ const buildTree = (data1, data2) => {
     }
     if (_.isObject(valueData1) && _.isObject(valueData2)) {
       return {
-        name: key, status: 'hasChildren', children: buildTree(valueData1, valueData2),
+        name: key, status: 'hasChildren', children: buildChildrenRoot(valueData1, valueData2),
       };
     }
     if (valueData1 !== valueData2) {
@@ -24,5 +24,9 @@ const buildTree = (data1, data2) => {
     }
     return { name: key, status: 'unchanged', value: valueData1 };
   });
+};
+const buildTree = (data1, data2) => {
+  const childrenRoot = buildChildrenRoot(data1, data2);
+  return { name: 'root', status: 'allСontent', children: childrenRoot };
 };
 export default buildTree;

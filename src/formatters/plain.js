@@ -24,12 +24,16 @@ const makePlainFormat = (node) => {
           return `Property '${connectedNewPath}' was updated. From ${makeValue(obj.oldValue)} to ${makeValue(obj.newValue)}`;
         case 'hasChildren':
           return iter(obj.children, newPath);
-        default:
+        case 'unchanged':
           return undefined;
+        case 'allСontent':
+          return iter(obj.children, path);
+        default:
+          throw new Error(`Unknown object status: '${obj.status}'!`);
       }
     });
     return lines.filter((str) => str !== undefined).join('\n');
   };
-  return iter(node, []);
+  return iter([node], []);
 };
 export default makePlainFormat;

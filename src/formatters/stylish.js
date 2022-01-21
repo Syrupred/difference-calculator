@@ -18,22 +18,24 @@ const makeValue = (data, depth) => {
 export default (data) => {
   const iter = (currentValue, depth) => {
     const lines = currentValue.map((obj) => {
-      if (obj.status === 'added') {
-        return `${makeIndent(depth + 1)}+ ${obj.name}: ${makeValue(obj.value, depth)}`;
+      switch (obj.status) {
+        case 'added':
+          return `${makeIndent(depth + 1)}+ ${obj.name}: ${makeValue(obj.value, depth)}`;
+        case 'deleted':
+          return `${makeIndent(depth + 1)}- ${obj.name}: ${makeValue(obj.value, depth)}`;
+        case 'unchanged':
+          return `${makeIndent(depth + 2)}${obj.name}: ${makeValue(obj.value, depth)}`;
+        case 'changed':
+          return `${makeIndent(depth + 1)}- ${obj.name}: ${makeValue(obj.oldValue, depth)}\n${makeIndent(depth + 1)}+ ${obj.name}: ${makeValue(obj.newValue, depth)}`;
+        case 'hasChildren':
+          return `${makeIndent(depth + 2)}${obj.name}: {\n${iter(obj.children, depth + 2)}\n${makeIndent(depth + 2)}}`;
+        case 'allСontent':
+          return `{\n${iter(obj.children, depth)}\n}`;
+        default:
+          throw new Error(`Unknown object status: '${obj.status}'!`);
       }
-      if (obj.status === 'deleted') {
-        return `${makeIndent(depth + 1)}- ${obj.name}: ${makeValue(obj.value, depth)}`;
-      }
-      if (obj.status === 'unchanged') {
-        return `${makeIndent(depth + 2)}${obj.name}: ${makeValue(obj.value, depth)}`;
-      }
-      if (obj.status === 'changed') {
-        return `${makeIndent(depth + 1)}- ${obj.name}: ${makeValue(obj.oldValue, depth)}\n${makeIndent(depth + 1)}+ ${obj.name}: ${makeValue(obj.newValue, depth)}`;
-      }
-
-      return `${makeIndent(depth + 2)}${obj.name}: ${iter(obj.children, depth + 2)}`;
     });
-    return ['{', ...lines, `${makeIndent(depth)}}`].join('\n');
+    return lines.join('\n');
   };
-  return iter(data, 0);
+  return iter([data], 0);
 };
