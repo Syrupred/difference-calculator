@@ -15,27 +15,27 @@ const makeValue = (data, depth) => {
   return ['{', ...lines, `${makeIndent(depth + 2)}}`].join('\n');
 };
 
-export default (data) => {
-  const iter = (currentValue, depth) => {
-    const lines = currentValue.map((obj) => {
-      switch (obj.status) {
-        case 'added':
-          return `${makeIndent(depth + 1)}+ ${obj.name}: ${makeValue(obj.value, depth)}`;
-        case 'deleted':
-          return `${makeIndent(depth + 1)}- ${obj.name}: ${makeValue(obj.value, depth)}`;
-        case 'unchanged':
-          return `${makeIndent(depth + 2)}${obj.name}: ${makeValue(obj.value, depth)}`;
-        case 'changed':
-          return `${makeIndent(depth + 1)}- ${obj.name}: ${makeValue(obj.oldValue, depth)}\n${makeIndent(depth + 1)}+ ${obj.name}: ${makeValue(obj.newValue, depth)}`;
-        case 'hasChildren':
-          return `${makeIndent(depth + 2)}${obj.name}: {\n${iter(obj.children, depth + 2)}\n${makeIndent(depth + 2)}}`;
-        case 'allСontent':
-          return `{\n${iter(obj.children, depth)}\n}`;
-        default:
-          throw new Error(`Unknown object status: '${obj.status}'!`);
-      }
-    });
-    return lines.join('\n');
-  };
-  return iter([data], 0);
+const makeStylishFormat = (data, depth = 0) => {
+  if (data.name === 'root') {
+    return `{\n${makeStylishFormat(data.children, depth)}\n}`;
+  }
+  const lines = data.map((obj) => {
+    switch (obj.type) {
+      case 'added':
+        return `${makeIndent(depth + 1)}+ ${obj.name}: ${makeValue(obj.value, depth)}`;
+      case 'deleted':
+        return `${makeIndent(depth + 1)}- ${obj.name}: ${makeValue(obj.value, depth)}`;
+      case 'unchanged':
+        return `${makeIndent(depth + 2)}${obj.name}: ${makeValue(obj.value, depth)}`;
+      case 'changed':
+        return `${makeIndent(depth + 1)}- ${obj.name}: ${makeValue(obj.oldValue, depth)}\n${makeIndent(depth + 1)}+ ${obj.name}: ${makeValue(obj.newValue, depth)}`;
+      case 'hasChildren':
+        return `${makeIndent(depth + 2)}${obj.name}: {\n${makeStylishFormat(obj.children, depth + 2)}\n${makeIndent(depth + 2)}}`;
+      default:
+        throw new Error(`Unknown object status: '${obj.type}'!`);
+    }
+  });
+  return lines.join('\n');
 };
+
+export default makeStylishFormat;

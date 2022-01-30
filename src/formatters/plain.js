@@ -10,30 +10,28 @@ const makeValue = (data) => {
   return data;
 };
 
-const makePlainFormat = (node) => {
-  const iter = (data, path) => {
-    const lines = data.map((obj) => {
-      const newPath = [...path, obj.name];
-      const connectedNewPath = newPath.join('.');
-      switch (obj.status) {
-        case 'added':
-          return `Property '${connectedNewPath}' was added with value: ${makeValue(obj.value)}`;
-        case 'deleted':
-          return `Property '${connectedNewPath}' was removed`;
-        case 'changed':
-          return `Property '${connectedNewPath}' was updated. From ${makeValue(obj.oldValue)} to ${makeValue(obj.newValue)}`;
-        case 'hasChildren':
-          return iter(obj.children, newPath);
-        case 'unchanged':
-          return undefined;
-        case 'allСontent':
-          return iter(obj.children, path);
-        default:
-          throw new Error(`Unknown object status: '${obj.status}'!`);
-      }
-    });
-    return lines.filter((str) => str !== undefined).join('\n');
-  };
-  return iter([node], []);
+const makePlainFormat = (node, path = []) => {
+  if (node.name === 'root') {
+    return makePlainFormat(node.children, path);
+  }
+  const lines = node.map((obj) => {
+    const newPath = [...path, obj.name];
+    const connectedNewPath = newPath.join('.');
+    switch (obj.type) {
+      case 'added':
+        return `Property '${connectedNewPath}' was added with value: ${makeValue(obj.value)}`;
+      case 'deleted':
+        return `Property '${connectedNewPath}' was removed`;
+      case 'changed':
+        return `Property '${connectedNewPath}' was updated. From ${makeValue(obj.oldValue)} to ${makeValue(obj.newValue)}`;
+      case 'hasChildren':
+        return makePlainFormat(obj.children, newPath);
+      case 'unchanged':
+        return undefined;
+      default:
+        throw new Error(`Unknown object status: '${obj.type}'!`);
+    }
+  });
+  return lines.filter((str) => str !== undefined).join('\n');
 };
 export default makePlainFormat;

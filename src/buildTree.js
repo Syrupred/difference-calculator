@@ -7,26 +7,26 @@ const buildChildrenRoot = (data1, data2) => {
     const valueData2 = data2[key];
 
     if (!_.has(data1, key)) {
-      return { name: key, status: 'added', value: valueData2 };
+      return { name: key, type: 'added', value: valueData2 };
     }
     if (!_.has(data2, key)) {
-      return { name: key, status: 'deleted', value: valueData1 };
+      return { name: key, type: 'deleted', value: valueData1 };
     }
     if (_.isObject(valueData1) && _.isObject(valueData2)) {
       return {
-        name: key, status: 'hasChildren', children: buildChildrenRoot(valueData1, valueData2),
+        name: key, type: 'hasChildren', children: buildChildrenRoot(valueData1, valueData2),
       };
     }
     if (valueData1 !== valueData2) {
       return {
-        name: key, status: 'changed', oldValue: valueData1, newValue: valueData2,
+        name: key, type: 'changed', oldValue: valueData1, newValue: valueData2,
       };
     }
-    return { name: key, status: 'unchanged', value: valueData1 };
+    return { name: key, type: 'unchanged', value: valueData1 };
   });
 };
 const buildTree = (data1, data2) => {
   const childrenRoot = buildChildrenRoot(data1, data2);
-  return { name: 'root', status: 'allСontent', children: childrenRoot };
+  return { name: 'root', type: 'hasChildren', children: childrenRoot };
 };
 export default buildTree;
