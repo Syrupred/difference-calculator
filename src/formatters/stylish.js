@@ -16,26 +16,22 @@ const makeValue = (data, depth) => {
 };
 
 const makeStylishFormat = (data, depth = 0) => {
-  if (data.name === 'root') {
-    return `{\n${makeStylishFormat(data.children, depth)}\n}`;
+  switch (data.type) {
+    case 'root':
+      return `{\n${(data.children.map((obj) => makeStylishFormat(obj, depth))).join('\n')}\n}`;
+    case 'added':
+      return `${makeIndent(depth + 1)}+ ${data.name}: ${makeValue(data.value, depth)}`;
+    case 'deleted':
+      return `${makeIndent(depth + 1)}- ${data.name}: ${makeValue(data.value, depth)}`;
+    case 'unchanged':
+      return `${makeIndent(depth + 2)}${data.name}: ${makeValue(data.value, depth)}`;
+    case 'changed':
+      return `${makeIndent(depth + 1)}- ${data.name}: ${makeValue(data.oldValue, depth)}\n${makeIndent(depth + 1)}+ ${data.name}: ${makeValue(data.newValue, depth)}`;
+    case 'hasChildren':
+      return `${makeIndent(depth + 2)}${data.name}: {\n${(data.children.map((obj) => makeStylishFormat(obj, depth + 2))).join('\n')}\n${makeIndent(depth + 2)}}`;
+    default:
+      throw new Error(`Unknown object status: '${data.type}'!`);
   }
-  const lines = data.map((obj) => {
-    switch (obj.type) {
-      case 'added':
-        return `${makeIndent(depth + 1)}+ ${obj.name}: ${makeValue(obj.value, depth)}`;
-      case 'deleted':
-        return `${makeIndent(depth + 1)}- ${obj.name}: ${makeValue(obj.value, depth)}`;
-      case 'unchanged':
-        return `${makeIndent(depth + 2)}${obj.name}: ${makeValue(obj.value, depth)}`;
-      case 'changed':
-        return `${makeIndent(depth + 1)}- ${obj.name}: ${makeValue(obj.oldValue, depth)}\n${makeIndent(depth + 1)}+ ${obj.name}: ${makeValue(obj.newValue, depth)}`;
-      case 'hasChildren':
-        return `${makeIndent(depth + 2)}${obj.name}: {\n${makeStylishFormat(obj.children, depth + 2)}\n${makeIndent(depth + 2)}}`;
-      default:
-        throw new Error(`Unknown object status: '${obj.type}'!`);
-    }
-  });
-  return lines.join('\n');
 };
 
 export default makeStylishFormat;

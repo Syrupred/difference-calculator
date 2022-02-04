@@ -27,6 +27,6 @@ const buildChildrenRoot = (data1, data2) => {
 };
 const buildTree = (data1, data2) => {
   const childrenRoot = buildChildrenRoot(data1, data2);
-  return { name: 'root', type: 'hasChildren', children: childrenRoot };
+  return { name: 'root', type: 'root', children: childrenRoot };
 };
 export default buildTree;
